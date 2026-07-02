@@ -1,8 +1,7 @@
 .next
 node_modules
 .netlify
-.env
-.env.local
+.env*
 coverage
 dist
 *.log

@@ -9,12 +9,12 @@ import { buildMetadata } from "@/lib/seo";
 import { getCategoryBySlug, getCategorySummaries, getStorefrontProducts } from "@/lib/storefront";
 
 type CategoryPageProps = {
-  params: { slug: string };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   const category = await getCategoryBySlug(slug);
 
   if (!category) {
@@ -32,7 +32,8 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 }
 
 export default async function CategoryDetailPage({ params, searchParams }: CategoryPageProps) {
-  const { slug } = params;
+  const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
   const [category, categories] = await Promise.all([getCategoryBySlug(slug), getCategorySummaries()]);
 
   if (!category) {
@@ -40,11 +41,11 @@ export default async function CategoryDetailPage({ params, searchParams }: Categ
   }
 
   const result = await getStorefrontProducts({
-    ...searchParams,
+    ...resolvedSearchParams,
     category: category.id
   });
   const currentValues = Object.fromEntries(
-    Object.entries(searchParams).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])
+    Object.entries(resolvedSearchParams).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])
   ) as Record<string, string | undefined>;
 
   return (

@@ -5,10 +5,17 @@ import { defaultStoreSettings, demoCategories, demoOrders, demoProducts } from "
 const prisma = new PrismaClient();
 
 async function main() {
-  const passwordHash = await bcrypt.hash("Admin123!", 10);
+  const adminEmail = process.env.DEMO_ADMIN_EMAIL?.trim();
+  const adminPassword = process.env.DEMO_ADMIN_PASSWORD?.trim();
+
+  if (!adminEmail || !adminPassword) {
+    throw new Error("Configure DEMO_ADMIN_EMAIL e DEMO_ADMIN_PASSWORD antes de rodar o seed.");
+  }
+
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
 
   const admin = await prisma.user.upsert({
-    where: { email: "admin@martinstechplace.local" },
+    where: { email: adminEmail },
     update: {
       name: "Admin Martins Tech Place",
       passwordHash,
@@ -16,7 +23,7 @@ async function main() {
     },
     create: {
       name: "Admin Martins Tech Place",
-      email: "admin@martinstechplace.local",
+      email: adminEmail,
       passwordHash,
       role: UserRole.ADMIN
     }

@@ -25,8 +25,9 @@ export const env = envSchema.parse({
 });
 
 export const hasDatabaseUrl = Boolean(env.DATABASE_URL);
-export const demoAdminEmail = env.DEMO_ADMIN_EMAIL ?? "admin@martinstechplace.local";
-export const demoAdminPassword = env.DEMO_ADMIN_PASSWORD ?? "Admin123!";
+export const demoAdminEmail = env.DEMO_ADMIN_EMAIL?.trim() || null;
+export const demoAdminPassword = env.DEMO_ADMIN_PASSWORD?.trim() || null;
+export const hasDemoAdminCredentials = Boolean(demoAdminEmail && demoAdminPassword);
 
 export const missingMeliEnv = () =>
   [

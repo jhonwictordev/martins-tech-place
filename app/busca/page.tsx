@@ -14,10 +14,11 @@ export const metadata: Metadata = buildMetadata({
 export default async function SearchPage({
   searchParams
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const query = Array.isArray(searchParams.q) ? searchParams.q[0] : searchParams.q;
-  const result = await getStorefrontProducts(searchParams);
+  const resolvedSearchParams = await searchParams;
+  const query = Array.isArray(resolvedSearchParams.q) ? resolvedSearchParams.q[0] : resolvedSearchParams.q;
+  const result = await getStorefrontProducts(resolvedSearchParams);
 
   return (
     <StorefrontShell>

@@ -8,9 +8,10 @@ import { getProductById } from "@/lib/storefront";
 export default async function AdminProductDetailPage({
   params
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const product = await getProductById(params.id);
+  const { id } = await params;
+  const product = await getProductById(id);
 
   if (!product) {
     notFound();

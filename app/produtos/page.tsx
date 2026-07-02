@@ -16,15 +16,16 @@ export const metadata: Metadata = buildMetadata({
 export default async function ProductsPage({
   searchParams
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const resolvedSearchParams = await searchParams;
   const [categories, result] = await Promise.all([
     getCategorySummaries(),
-    getStorefrontProducts(searchParams)
+    getStorefrontProducts(resolvedSearchParams)
   ]);
 
   const currentValues = Object.fromEntries(
-    Object.entries(searchParams).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])
+    Object.entries(resolvedSearchParams).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])
   ) as Record<string, string | undefined>;
 
   return (

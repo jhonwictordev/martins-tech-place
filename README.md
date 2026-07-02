@@ -51,16 +51,18 @@ styles/
 
 ## Variaveis de ambiente
 
-Crie um arquivo `.env` na raiz do projeto com base no `.env.example`:
+Crie um arquivo `.env.local` na raiz do projeto e defina valores proprios para cada chave:
 
 ```env
 MELI_CLIENT_ID=
 MELI_CLIENT_SECRET=
 MELI_REDIRECT_URI=http://localhost:3000/api/mercadolivre/callback
 MELI_SITE_ID=MLB
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/tech_mercado_store?schema=public
-NEXTAUTH_SECRET=troque-este-segredo
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/DATABASE?schema=public
+NEXTAUTH_SECRET=gere-um-segredo-forte
 NEXTAUTH_URL=http://localhost:3000
+DEMO_ADMIN_EMAIL=admin@seudominio.com
+DEMO_ADMIN_PASSWORD=defina-uma-senha-forte
 ```
 
 ## Instalacao
@@ -78,12 +80,7 @@ Projeto local:
 - Loja: `http://localhost:3000`
 - Admin: `http://localhost:3000/login`
 
-Credenciais iniciais do admin seed:
-
-```txt
-E-mail: admin@martinstechplace.local
-Senha: Admin123!
-```
+As credenciais administrativas sao definidas por `DEMO_ADMIN_EMAIL` e `DEMO_ADMIN_PASSWORD`. Nao publique senhas reais no repositorio.
 
 ## Comandos principais
 

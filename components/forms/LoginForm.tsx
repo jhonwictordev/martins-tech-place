@@ -20,8 +20,8 @@ export function LoginForm() {
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "admin@martinstechplace.local",
-      password: "Admin123!"
+      email: "",
+      password: ""
     }
   });
 
@@ -48,6 +48,9 @@ export function LoginForm() {
       <h1 className="font-display text-3xl text-white">Entrar no painel</h1>
       <p className="mt-3 text-sm leading-7 text-slate-300">
         Use sua conta administrativa para conectar o Mercado Livre, sincronizar produtos e acompanhar pedidos.
+      </p>
+      <p className="mt-2 text-xs leading-6 text-slate-400">
+        Em ambientes sem banco, configure credenciais administrativas via variaveis de ambiente antes de acessar o painel.
       </p>
       <div className="mt-8 space-y-4">
         <div>

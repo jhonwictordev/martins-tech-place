@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { type NextAuthOptions, getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { demoAdminEmail, demoAdminPassword, hasDatabaseUrl } from "@/lib/env";
+import { demoAdminEmail, demoAdminPassword, hasDatabaseUrl, hasDemoAdminCredentials } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validations";
 
@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        if (!hasDatabaseUrl) {
+        if (!hasDatabaseUrl && hasDemoAdminCredentials && demoAdminEmail && demoAdminPassword) {
           if (
             parsed.data.email.toLowerCase() === demoAdminEmail.toLowerCase() &&
             parsed.data.password === demoAdminPassword
@@ -39,6 +39,10 @@ export const authOptions: NextAuthOptions = {
             };
           }
 
+          return null;
+        }
+
+        if (!hasDatabaseUrl) {
           return null;
         }
 
