@@ -1,0 +1,152 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+}
+
+model User {
+  id           String       @id @default(cuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  role         UserRole     @default(ADMIN)
+  meliAccount  MeliAccount?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model MeliAccount {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  meliUserId     String   @unique
+  accessToken    String
+  refreshToken   String
+  tokenExpiresAt DateTime
+  scope          String?
+  connectedAt    DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id             String    @id @default(cuid())
+  meliCategoryId String    @unique
+  name           String
+  parentId       String?
+  products       Product[]
+  createdAt      DateTime  @default(now())
+}
+
+model Product {
+  id                String             @id @default(cuid())
+  meliItemId        String             @unique
+  title             String
+  description       String             @db.Text
+  price             Decimal            @db.Decimal(10, 2)
+  originalPrice     Decimal?           @db.Decimal(10, 2)
+  currencyId        String             @default("BRL")
+  availableQuantity Int                @default(0)
+  soldQuantity      Int                @default(0)
+  condition         String
+  permalink         String
+  thumbnail         String
+  categoryId        String
+  categoryName      String
+  brand             String?
+  model             String?
+  freeShipping      Boolean            @default(false)
+  status            String             @default("active")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  category          Category?          @relation(fields: [categoryId], references: [meliCategoryId])
+  images            ProductImage[]
+  attributes        ProductAttribute[]
+  orderItems        OrderItem[]
+
+  @@index([categoryId])
+  @@index([status])
+  @@index([availableQuantity])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  url       String
+  position  Int     @default(0)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, position])
+}
+
+model ProductAttribute {
+  id        String  @id @default(cuid())
+  productId String
+  name      String
+  value     String  @db.Text
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  meliOrderId  String      @unique
+  buyerName    String?
+  buyerNickname String?
+  status       String
+  totalAmount  Decimal     @db.Decimal(10, 2)
+  currencyId   String      @default("BRL")
+  dateCreated  DateTime
+  dateClosed   DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  items        OrderItem[]
+
+  @@index([status])
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  productId String?
+  title     String
+  quantity  Int
+  unitPrice Decimal  @db.Decimal(10, 2)
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+}
+
+model WebhookLog {
+  id            String   @id @default(cuid())
+  topic         String
+  resource      String
+  userId        String?
+  applicationId String?
+  attempts      Int      @default(1)
+  receivedAt    DateTime @default(now())
+  payload       Json
+
+  @@index([topic])
+}
+
+model StoreSettings {
+  id              String   @id @default(cuid())
+  storeName       String   @default("Martins Tech Place")
+  logoUrl         String?
+  whatsapp        String?
+  instagram       String?
+  email           String?
+  metaTitle       String?
+  metaDescription String?
+}

@@ -1,0 +1,7 @@
+<svg width="220" height="56" viewBox="0 0 220 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="56" height="56" rx="16" fill="#2563EB"/>
+  <path d="M18 18H38V24H30V40H24V24H18V18Z" fill="#FFFFFF"/>
+  <path d="M36 18H42L30 40H24L36 18Z" fill="#06B6D4"/>
+  <text x="70" y="24" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="18" font-weight="700">Martins Tech Place</text>
+  <text x="70" y="42" fill="#06B6D4" font-family="Arial, sans-serif" font-size="14" font-weight="600">Store</text>
+</svg>
