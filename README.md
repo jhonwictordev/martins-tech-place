@@ -1,33 +1,33 @@
 # Martins Tech Place
 
-Loja virtual moderna de tecnologia integrada ao Mercado Livre, desenvolvida com Next.js 14+, TypeScript, Tailwind CSS, Prisma ORM, PostgreSQL e NextAuth.
+Martins Tech Place is a modern technology storefront connected to Mercado Livre, built with Next.js, TypeScript, Tailwind CSS, Prisma ORM, PostgreSQL, and NextAuth.
 
-## O que o projeto entrega
+## Overview
 
-- Home completa com hero comercial, categorias, destaques, ofertas relampago, mais vendidos e beneficios.
-- Catalogo com busca, filtros por categoria, preco, marca, condicao, frete gratis, estoque e ordenacao.
-- Pagina individual de produto com galeria, caracteristicas tecnicas, informacoes do vendedor e botao de compra no Mercado Livre.
-- Blog com posts em Markdown e SEO estruturado.
-- Painel administrativo protegido em `/admin`.
-- Integracao OAuth com Mercado Livre.
-- Sincronizacao manual de produtos e pedidos.
-- Endpoint de webhook para atualizar catalogo e pedidos.
-- Prisma schema completo com produtos, imagens, atributos, pedidos, logs e configuracoes da loja.
+- Full landing experience with hero banner, category navigation, featured products, flash deals, best sellers, and trust highlights.
+- Product catalog with search, category filters, price filters, condition filters, free shipping filters, stock filters, and sorting.
+- Individual product pages with gallery, technical details, seller context, and a buy button that redirects to the official Mercado Livre listing.
+- Blog section powered by Markdown content and SEO-ready pages.
+- Protected admin area at `/admin`.
+- Mercado Livre OAuth integration.
+- Manual product and order synchronization.
+- Webhook endpoint for catalog and order updates.
+- Prisma schema covering products, images, attributes, orders, webhook logs, and store settings.
 
 ## Stack
 
-- Next.js com App Router
+- Next.js App Router
 - TypeScript
 - Tailwind CSS
 - Prisma ORM
 - PostgreSQL
-- NextAuth com Credentials
-- API Routes
+- NextAuth credentials-based authentication
+- API routes
 - Zod
 - React Hook Form
-- Fetch nativo
+- Native `fetch`
 
-## Estrutura principal
+## Project Structure
 
 ```txt
 app/
@@ -49,23 +49,9 @@ public/
 styles/
 ```
 
-## Variaveis de ambiente
+## Getting Started
 
-Crie um arquivo `.env.local` na raiz do projeto e defina valores proprios para cada chave:
-
-```env
-MELI_CLIENT_ID=
-MELI_CLIENT_SECRET=
-MELI_REDIRECT_URI=http://localhost:3000/api/mercadolivre/callback
-MELI_SITE_ID=MLB
-DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/DATABASE?schema=public
-NEXTAUTH_SECRET=gere-um-segredo-forte
-NEXTAUTH_URL=http://localhost:3000
-DEMO_ADMIN_EMAIL=admin@seudominio.com
-DEMO_ADMIN_PASSWORD=defina-uma-senha-forte
-```
-
-## Instalacao
+Install dependencies, generate Prisma Client, run migrations, seed the database, and start the development server:
 
 ```bash
 npm install
@@ -75,14 +61,14 @@ npm run db:seed
 npm run dev
 ```
 
-Projeto local:
+Local URLs:
 
-- Loja: `http://localhost:3000`
+- Storefront: `http://localhost:3000`
 - Admin: `http://localhost:3000/login`
 
-As credenciais administrativas sao definidas por `DEMO_ADMIN_EMAIL` e `DEMO_ADMIN_PASSWORD`. Nao publique senhas reais no repositorio.
+Administrative access should be configured locally with your own private credentials. Do not commit real secrets to the repository.
 
-## Comandos principais
+## Common Commands
 
 ```bash
 npm install
@@ -92,7 +78,7 @@ npm run db:seed
 npm run dev
 ```
 
-Outros comandos:
+Additional commands:
 
 ```bash
 npm run build
@@ -100,104 +86,104 @@ npm run start
 npm run lint
 ```
 
-## Como criar o app no Mercado Livre Developers
+## Mercado Livre Developer Setup
 
-1. Acesse o painel de desenvolvedores do Mercado Livre.
-2. Crie um novo aplicativo.
-3. Copie o `Client ID` e o `Client Secret`.
-4. Configure a URL de redirecionamento:
+1. Open the Mercado Livre developer dashboard.
+2. Create a new application.
+3. Copy the application credentials from the developer portal.
+4. Set the redirect URL to:
 
 ```txt
 http://localhost:3000/api/mercadolivre/callback
 ```
 
-5. Preencha `MELI_CLIENT_ID`, `MELI_CLIENT_SECRET` e `MELI_REDIRECT_URI` no `.env`.
+5. Store your credentials and callback settings only in your local runtime configuration and deployment platform.
 
-## Fluxo de conexao com Mercado Livre
+## Mercado Livre Connection Flow
 
-1. Inicie o projeto.
-2. Acesse `/login`.
-3. Entre com a conta administrativa.
-4. Acesse `/admin/integracao`.
-5. Clique em `Conectar Mercado Livre`.
-6. Autorize o aplicativo no Mercado Livre.
-7. Ao retornar para o callback, os tokens serao salvos no banco.
+1. Start the project locally.
+2. Open `/login`.
+3. Sign in with an administrative account.
+4. Go to `/admin/integracao`.
+5. Click the Mercado Livre connection action in the admin panel.
+6. Authorize the application in Mercado Livre.
+7. After the callback, tokens are saved in the database.
 
-## Sincronizacao de produtos
+## Product Synchronization
 
-Existem dois caminhos:
+There are two available paths:
 
-- Via painel:
+- From the admin panel:
   - `/admin/integracao`
-  - Botao `Sincronizar produtos agora`
-- Via API:
+  - Use the product synchronization action
+- From the API:
 
 ```bash
 POST /api/mercadolivre/sync-products
 ```
 
-O modulo faz:
+The module:
 
-- Busca anuncios do vendedor
-- Consulta detalhes do item
-- Busca descricao
-- Atualiza preco, estoque, imagens e atributos
-- Mantem os dados locais sincronizados
+- Fetches seller listings
+- Retrieves item details
+- Loads item descriptions
+- Updates price, stock, images, and attributes
+- Keeps local records synchronized
 
-## Sincronizacao de pedidos
+## Order Synchronization
 
-Via painel:
+From the admin panel:
 
 - `/admin/integracao`
-- Botao `Sincronizar pedidos agora`
+- Use the order synchronization action
 
-Via API:
+From the API:
 
 ```bash
 POST /api/mercadolivre/sync-orders
 ```
 
-O modulo faz:
+The module:
 
-- Busca pedidos do vendedor
-- Salva comprador, status, total e datas
-- Relaciona itens com produtos locais quando possivel
+- Fetches seller orders
+- Stores buyer info, status, totals, and timestamps
+- Links order items to local products whenever possible
 
-## Configuracao de webhook em producao
+## Webhook Setup
 
-URL do webhook:
+Webhook URL:
 
 ```txt
-POST https://seu-dominio.com/api/mercadolivre/webhook
+POST https://your-domain.com/api/mercadolivre/webhook
 ```
 
-Boas praticas:
+Best practices:
 
-- Use HTTPS em producao
-- Restrinja acesso ao painel admin
-- Nao exponha `MELI_CLIENT_SECRET`
-- Monitore `/admin/logs`
-- Verifique expiracao de token em `/admin/integracao`
+- Use HTTPS in production
+- Restrict access to the admin panel
+- Never expose Mercado Livre application secrets
+- Monitor `/admin/logs`
+- Track token expiration in `/admin/integracao`
 
-## SEO implementado
+## SEO
 
-- Metadata padrao na home
-- Metadata dinamica em produtos e posts
-- Open Graph
-- Sitemap em `/sitemap.xml`
-- Robots em `/robots.txt`
-- Schema.org Product nas paginas de produto
+- Default homepage metadata
+- Dynamic metadata for products and blog posts
+- Open Graph support
+- Sitemap at `/sitemap.xml`
+- Robots file at `/robots.txt`
+- Schema.org Product markup on product pages
 
-## Observacoes de arquitetura
+## Architecture Notes
 
-- O checkout nao acontece dentro do site.
-- O botao principal sempre redireciona para o `permalink` do anuncio oficial no Mercado Livre.
-- O projeto possui fallback demo para exibir a vitrine mesmo antes da primeira sincronizacao real.
-- O seed popula categorias, produtos de exemplo, pedidos e configuracoes iniciais.
+- Checkout does not happen inside this website.
+- The primary buy button always redirects to the official Mercado Livre permalink.
+- The project includes a demo fallback so the storefront can render before the first live synchronization.
+- The seed command populates categories, sample products, sample orders, and base store settings.
 
-## Rotas importantes
+## Important Routes
 
-Publicas:
+Public routes:
 
 - `/`
 - `/produtos`
@@ -210,7 +196,7 @@ Publicas:
 - `/blog`
 - `/blog/[slug]`
 
-Admin:
+Admin routes:
 
 - `/admin`
 - `/admin/produtos`
@@ -219,7 +205,7 @@ Admin:
 - `/admin/configuracoes`
 - `/admin/logs`
 
-API:
+API routes:
 
 - `/api/auth/[...nextauth]`
 - `/api/contact`
@@ -231,11 +217,11 @@ API:
 - `/api/mercadolivre/sync-orders`
 - `/api/mercadolivre/disconnect`
 
-## Proximos passos recomendados
+## Recommended Next Steps
 
-- Subir PostgreSQL de producao
-- Configurar dominio publico com HTTPS
-- Conectar conta real do Mercado Livre
-- Ajustar redirect URI de producao
-- Apontar webhook do app Mercado Livre para o dominio final
-- Revisar identidade visual com assets proprios da marca
+- Provision a production PostgreSQL database
+- Configure a public domain with HTTPS
+- Connect a real Mercado Livre seller account
+- Update the production redirect URL
+- Point the Mercado Livre webhook to the final domain
+- Replace placeholder branding assets with final production assets
