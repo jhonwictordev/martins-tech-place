@@ -14,14 +14,14 @@ export async function Header() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
             <Link
               href="/"
-              className="inline-flex items-center rounded-[28px] bg-white px-3 py-2 shadow-lg shadow-blue-950/20 ring-1 ring-white/10"
+              className="inline-flex items-center rounded-[24px] bg-white px-2.5 py-1.5 shadow-lg shadow-blue-950/20 ring-1 ring-white/10"
             >
               <Image
                 src={settings.logoUrl ?? "/logo-martins-techplace.png"}
                 alt={settings.storeName ?? "Martins Tech Place"}
-                width={205}
-                height={64}
-                className="h-auto w-[170px] sm:w-[205px]"
+                width={165}
+                height={56}
+                className="h-auto w-[135px] sm:w-[165px]"
                 priority
               />
             </Link>

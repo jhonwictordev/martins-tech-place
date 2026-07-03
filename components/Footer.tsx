@@ -9,13 +9,13 @@ export async function Footer() {
     <footer className="mt-20 border-t border-slate-800 bg-slate-950/80">
       <div className="container-shell grid gap-10 py-14 md:grid-cols-2 xl:grid-cols-4">
         <div>
-          <div className="inline-flex rounded-[28px] bg-white px-3 py-2 shadow-lg shadow-blue-950/20 ring-1 ring-white/10">
+          <div className="inline-flex rounded-[24px] bg-white px-2.5 py-1.5 shadow-lg shadow-blue-950/20 ring-1 ring-white/10">
             <Image
               src={settings.logoUrl ?? "/logo-martins-techplace.png"}
               alt={settings.storeName ?? "Martins Tech Place"}
-              width={220}
-              height={84}
-              className="h-auto w-[190px] sm:w-[220px]"
+              width={185}
+              height={70}
+              className="h-auto w-[155px] sm:w-[185px]"
             />
           </div>
           <p className="mt-5 text-sm leading-7 text-slate-300">
