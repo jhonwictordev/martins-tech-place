@@ -129,12 +129,16 @@ model OrderItem {
 
 model WebhookLog {
   id            String   @id @default(cuid())
+  eventKey      String   @unique
   topic         String
   resource      String
   userId        String?
   applicationId String?
   attempts      Int      @default(1)
   receivedAt    DateTime @default(now())
+  processedAt   DateTime?
+  status        String   @default("processing")
+  error         String?
   payload       Json
 
   @@index([topic])

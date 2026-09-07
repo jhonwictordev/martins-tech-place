@@ -54,6 +54,7 @@ styles/
 Install dependencies, generate Prisma Client, run migrations, seed the database, and start the development server:
 
 ```bash
+cp .env.example .env
 npm install
 npx prisma generate
 npx prisma migrate dev
@@ -67,6 +68,29 @@ Local URLs:
 - Admin: `http://localhost:3000/login`
 
 Administrative access should be configured locally with your own private credentials. Do not commit real secrets to the repository.
+
+### Environment configuration
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `DATABASE_URL` | Live mode | PostgreSQL connection used by Prisma. |
+| `NEXTAUTH_URL` | Yes | Canonical application URL and OAuth redirect base. |
+| `NEXTAUTH_SECRET` | Yes | Signs sessions and the short-lived OAuth state. |
+| `DEMO_ADMIN_EMAIL`, `DEMO_ADMIN_PASSWORD` | Demo seed only | Creates a local demonstrative administrator. Never reuse production credentials. |
+| `MELI_CLIENT_ID`, `MELI_CLIENT_SECRET`, `MELI_REDIRECT_URI` | Real integration only | Mercado Livre OAuth application configuration. |
+| `MELI_SITE_ID` | No | Marketplace site, default `MLB`. |
+
+The application fails safely when an integration variable is missing. Use a different database and different credentials for every environment.
+
+## Demo data versus real data
+
+| Mode | Data source | External effects |
+| --- | --- | --- |
+| Demo fallback | Static records from `lib/demo-data.ts` | No seller account, OAuth token, order or webhook is real. Buying links are illustrative redirects. |
+| Seeded development | PostgreSQL records created by `prisma/seed.ts` | Records are synthetic. OAuth remains disconnected until real credentials and explicit authorization are provided. |
+| Connected integration | Mercado Livre API plus PostgreSQL | Products, orders and notifications belong to the authorized seller account. Protect this environment as production data. |
+
+The admin integration screen identifies demo mode. Do not present seeded metrics, buyers or orders as real business results.
 
 ## Common Commands
 
@@ -164,6 +188,12 @@ Best practices:
 - Never expose Mercado Livre application secrets
 - Monitor `/admin/logs`
 - Track token expiration in `/admin/integracao`
+
+Webhook notifications receive a deterministic event key. Duplicate deliveries are acknowledged without running synchronization twice. Failures are stored with a `failed` status and a bounded error message for operational diagnosis.
+
+## Reliability tests
+
+`npm test` covers signed OAuth state, authorization-code exchange, refresh-token failure, duplicate notifications and synchronization failures. No test contacts Mercado Livre or uses a real seller account.
 
 ## SEO
 

@@ -1,15 +1,8 @@
 import type { MeliAccount } from "@prisma/client";
 import { env, assertMeliEnv } from "@/lib/env";
+import { oauthStateSecret } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
-
-type TokenResponse = {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-  scope?: string;
-  user_id: number | string;
-  refresh_token: string;
-};
+import { createOAuthState, requestOAuthToken, type OAuthTokenResponse } from "@/lib/mercadolivre/oauth";
 
 export function getMercadoLivreAuthorizationUrl(userId: string) {
   assertMeliEnv();
@@ -17,7 +10,7 @@ export function getMercadoLivreAuthorizationUrl(userId: string) {
   url.searchParams.set("response_type", "code");
   url.searchParams.set("client_id", env.MELI_CLIENT_ID!);
   url.searchParams.set("redirect_uri", env.MELI_REDIRECT_URI!);
-  url.searchParams.set("state", userId);
+  url.searchParams.set("state", createOAuthState(userId, oauthStateSecret()));
 
   return url.toString();
 }
@@ -25,31 +18,13 @@ export function getMercadoLivreAuthorizationUrl(userId: string) {
 export async function exchangeCodeForToken(code: string) {
   assertMeliEnv();
 
-  const response = await fetch("https://api.mercadolibre.com/oauth/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    body: JSON.stringify({
-      grant_type: "authorization_code",
-      client_id: env.MELI_CLIENT_ID,
-      client_secret: env.MELI_CLIENT_SECRET,
-      code,
-      redirect_uri: env.MELI_REDIRECT_URI
-    }),
-    cache: "no-store"
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Falha ao trocar codigo OAuth: ${errorText}`);
-  }
-
-  return (await response.json()) as TokenResponse;
+  return requestOAuthToken(
+    { code },
+    { clientId: env.MELI_CLIENT_ID!, clientSecret: env.MELI_CLIENT_SECRET!, redirectUri: env.MELI_REDIRECT_URI! },
+  );
 }
 
-export async function saveMeliTokens(userId: string, payload: TokenResponse) {
+export async function saveMeliTokens(userId: string, payload: OAuthTokenResponse) {
   return prisma.meliAccount.upsert({
     where: { userId },
     update: {
@@ -80,27 +55,10 @@ export async function refreshAccessToken(userId: string) {
     throw new Error("Conta do Mercado Livre nao encontrada para renovacao de token.");
   }
 
-  const response = await fetch("https://api.mercadolibre.com/oauth/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    body: JSON.stringify({
-      grant_type: "refresh_token",
-      client_id: env.MELI_CLIENT_ID,
-      client_secret: env.MELI_CLIENT_SECRET,
-      refresh_token: account.refreshToken
-    }),
-    cache: "no-store"
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Falha ao renovar token OAuth: ${errorText}`);
-  }
-
-  const refreshed = (await response.json()) as TokenResponse;
+  const refreshed = await requestOAuthToken(
+    { refreshToken: account.refreshToken },
+    { clientId: env.MELI_CLIENT_ID!, clientSecret: env.MELI_CLIENT_SECRET!, redirectUri: env.MELI_REDIRECT_URI! },
+  );
   await saveMeliTokens(userId, refreshed);
 
   return prisma.meliAccount.findUniqueOrThrow({

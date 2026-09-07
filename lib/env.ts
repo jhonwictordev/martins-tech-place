@@ -45,3 +45,8 @@ export function assertMeliEnv() {
     );
   }
 }
+
+export function oauthStateSecret() {
+  if (!env.NEXTAUTH_SECRET) throw new Error("NEXTAUTH_SECRET e obrigatorio para proteger o fluxo OAuth.");
+  return env.NEXTAUTH_SECRET;
+}

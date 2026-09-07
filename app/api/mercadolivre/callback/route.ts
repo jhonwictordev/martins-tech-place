@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { exchangeCodeForToken, saveMeliTokens } from "@/lib/mercadolivre/auth";
+import { oauthStateSecret } from "@/lib/env";
+import { verifyOAuthState } from "@/lib/mercadolivre/oauth";
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
@@ -12,8 +14,9 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const userId = verifyOAuthState(state, oauthStateSecret());
     const tokens = await exchangeCodeForToken(code);
-    await saveMeliTokens(state, tokens);
+    await saveMeliTokens(userId, tokens);
 
     return NextResponse.redirect(
       new URL("/admin/integracao?connected=1", process.env.NEXTAUTH_URL ?? "http://localhost:3000")
