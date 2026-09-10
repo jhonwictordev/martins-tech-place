@@ -1,5 +1,7 @@
 # Martins Tech Place
 
+> See the [portfolio overview](docs/portfolio-overview.md) for architecture, the safe public walkthrough and integration boundaries.
+
 Martins Tech Place is a modern technology storefront connected to Mercado Livre, built with Next.js, TypeScript, Tailwind CSS, Prisma ORM, PostgreSQL, and NextAuth.
 
 ## Overview
