@@ -1,5 +1,7 @@
 # Martins Tech Place
 
+[![CI](https://github.com/jhonwictordev/martins-tech-place/actions/workflows/ci.yml/badge.svg)](https://github.com/jhonwictordev/martins-tech-place/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e.svg)](LICENSE) [![Demo](https://img.shields.io/badge/demo-synthetic%20catalog-0ea5e9.svg)](https://jhonwictordev.github.io/martins-tech-place/) [![Integration](https://img.shields.io/badge/Mercado%20Livre-configurable-f59e0b.svg)](#overview)
+
 > See the [portfolio overview](docs/portfolio-overview.md) for architecture, the safe public walkthrough and integration boundaries.
 
 Martins Tech Place is a modern technology storefront connected to Mercado Livre, built with Next.js, TypeScript, Tailwind CSS, Prisma ORM, PostgreSQL, and NextAuth.
